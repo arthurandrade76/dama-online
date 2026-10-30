@@ -25,6 +25,16 @@
         <input id="home-name" maxlength="20" placeholder="Como quer ser chamado?" autocomplete="nickname">
       </label>
 
+      <div class="rules-toggle-group">
+        <label class="toggle-card">
+          <input type="checkbox" id="home-mandatory" checked>
+          <div class="toggle-text">
+            <strong>Comer peça é obrigatório</strong>
+            <small>Regra oficial brasileira (lei da maioria)</small>
+          </div>
+        </label>
+      </div>
+
       <button id="btn-create" class="btn primary big">Criar sala</button>
 
       <div class="divider"><span>ou entre com um código</span></div>
@@ -54,6 +64,7 @@
       <a href="/" class="brand"><span class="lp red small"></span> Dama <em>Online</em></a>
       <div class="share">
         <span class="room-code">Sala <b id="room-code"></b></span>
+        <span id="room-rule-badge" class="rule-badge"></span>
         <button id="btn-copy" class="btn small">🔗 Copiar link</button>
       </div>
     </header>

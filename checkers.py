@@ -94,7 +94,7 @@ def _captures_from(board, r, c):
     return results
 
 
-def legal_moves(board, color):
+def legal_moves(board, color, mandatory_capture=True):
     captures = []
     for r in range(SIZE):
         for c in range(SIZE):
@@ -102,17 +102,20 @@ def legal_moves(board, color):
             if p and p['color'] == color:
                 captures.extend(_captures_from(board, r, c))
 
+    seen, unique_captures = set(), []
     if captures:
         best = max(len(m['captured']) for m in captures)
-        seen, unique = set(), []
         for m in captures:
-            if len(m['captured']) != best:
+            # Se for captura obrigatória, filtra pela lei da maioria
+            if mandatory_capture and len(m['captured']) != best:
                 continue
             key = str(m['path'])
             if key not in seen:
                 seen.add(key)
-                unique.append(m)
-        return unique
+                unique_captures.append(m)
+
+    if mandatory_capture and unique_captures:
+        return unique_captures
 
     moves = []
     forward = -1 if color == 'w' else 1
@@ -133,10 +136,10 @@ def legal_moves(board, color):
                     rr, c2 = r + forward, c + dc
                     if inside(rr, c2) and board[rr][c2] is None:
                         moves.append({'path': [[r, c], [rr, c2]], 'captured': []})
-    return moves
+    return unique_captures + moves
 
 
-def apply_move(game, move):
+def apply_move(game, move, mandatory_capture=True):
     """Aplica um lance (já validado) e devolve o novo estado do jogo."""
     g = copy.deepcopy(game)
     board = g['board']
@@ -169,7 +172,7 @@ def apply_move(game, move):
         g['quietKingPlies'] = 0
 
     g['turn'] = other(mover)
-    if not legal_moves(board, g['turn']):
+    if not legal_moves(board, g['turn'], mandatory_capture=mandatory_capture):
         g['result'] = {'winner': mover, 'reason': 'no_moves'}
     elif g['quietKingPlies'] >= QUIET_KING_PLY_LIMIT:
         g['result'] = {'winner': None, 'reason': 'draw_rule'}

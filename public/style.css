@@ -87,6 +87,29 @@ input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,164,88
 .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--panel-border); }
 .join-row { display: flex; gap: 8px; }
 .join-row input { text-transform: uppercase; letter-spacing: 4px; text-align: center; font-weight: 700; }
+
+.rules-toggle-group {
+  display: flex; flex-direction: column; gap: 8px;
+}
+.toggle-card {
+  display: flex; align-items: center; gap: 12px;
+  background: #1d1915; border: 1px solid var(--panel-border);
+  padding: 10px 14px; border-radius: 10px; cursor: pointer;
+  transition: border-color .2s, background .2s;
+  user-select: none;
+}
+.toggle-card:hover { border-color: #54473a; background: #241f1a; }
+.toggle-card input[type="checkbox"] {
+  width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; flex: none;
+}
+.toggle-text { display: flex; flex-direction: column; gap: 2px; }
+.toggle-text strong { font-size: .95rem; color: var(--text); }
+.toggle-text small { font-size: .8rem; color: var(--muted); }
+
+.rule-badge {
+  font-size: .75rem; padding: 3px 8px; border-radius: 6px; font-weight: 600;
+  background: #2a221a; border: 1px solid #4a3a2b; color: var(--accent);
+}
 .rules { color: var(--muted); font-size: .92rem; }
 .rules summary { cursor: pointer; color: var(--text); font-weight: 600; }
 .rules ul { padding-left: 18px; line-height: 1.55; }

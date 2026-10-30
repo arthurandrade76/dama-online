@@ -81,8 +81,9 @@
       const name = nameInput.value.trim();
       if (!name) { nameInput.focus(); toast('Digite seu nome primeiro 🙂'); return; }
       setName(name);
+      const mandatoryCapture = $('#home-mandatory').checked;
       try {
-        const { room } = await api('/api/rooms');
+        const { room } = await api('/api/rooms', { mandatoryCapture });
         location.href = `/sala/${room}`;
       } catch (e) { toast(e.message); }
     };
@@ -339,7 +340,7 @@
       // se só existe um destino possível para uma peça simples, não auto-joga: o jogador escolhe.
     } else {
       const p = state.game.board[r][c];
-      if (p && p.color === state.you && moves.length && moves[0].captured.length) {
+      if (state.mandatoryCapture && p && p.color === state.you && moves.length && moves[0].captured.length) {
         toast('Captura obrigatória! Use uma peça destacada.');
       }
       partial = [];
@@ -468,6 +469,13 @@
     renderBar($('#bar-top'), top);
     renderHighlights();
 
+    // Regra da sala
+    const badge = $('#room-rule-badge');
+    if (badge) {
+      badge.textContent = state.mandatoryCapture ? 'Comer obrigatório' : 'Comer opcional';
+      badge.title = state.mandatoryCapture ? 'Nesta sala a captura de peças é obrigatória' : 'Nesta sala comer peça é opcional';
+    }
+
     // status
     const status = $('#status');
     const actions = $('#actions');
@@ -485,7 +493,7 @@
       const turnName = state.players[g.turn]?.name || COLOR_NAME[g.turn];
       status.innerHTML = `👀 Você está assistindo<small>Vez de ${escapeHtml(turnName)} (${COLOR_NAME[g.turn].toLowerCase()})</small>`;
     } else if (g.turn === you) {
-      const cap = state.moves.length && state.moves[0].captured.length;
+      const cap = state.mandatoryCapture && state.moves.length && state.moves[0].captured.length;
       status.innerHTML = `Sua vez!` + (cap
         ? `<small class="warn">⚠️ Captura obrigatória de ${cap} peça${cap > 1 ? 's' : ''}.</small>`
         : `<small>Clique numa peça destacada e depois no destino.</small>`);

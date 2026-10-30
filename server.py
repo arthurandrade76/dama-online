@@ -32,8 +32,9 @@ def clean_name(name):
 
 
 class Room:
-    def __init__(self, room_id):
+    def __init__(self, room_id, mandatory_capture=True):
         self.id = room_id
+        self.mandatory_capture = bool(mandatory_capture)
         self.lock = threading.RLock()
         self.game = checkers.new_game()
         self.seats = {'w': None, 'b': None}  # {'token':..., 'name':...}
@@ -75,9 +76,10 @@ class Room:
             }
         g = self.game
         ready = all(self.seats.values())
-        moves = checkers.legal_moves(g['board'], g['turn']) if ready and not g['result'] else []
+        moves = checkers.legal_moves(g['board'], g['turn'], mandatory_capture=self.mandatory_capture) if ready and not g['result'] else []
         return {
             'room': self.id,
+            'mandatoryCapture': self.mandatory_capture,
             'you': self.color_of(token),
             'players': players,
             'spectators': len([t for t in self.spectators if self.online(t)]),
@@ -150,9 +152,9 @@ class Room:
             if g['turn'] != color:
                 return 'Não é sua vez.'
             path = data.get('path')
-            for m in checkers.legal_moves(g['board'], color):
+            for m in checkers.legal_moves(g['board'], color, mandatory_capture=self.mandatory_capture):
                 if m['path'] == path:
-                    self.game = checkers.apply_move(g, m)
+                    self.game = checkers.apply_move(g, m, mandatory_capture=self.mandatory_capture)
                     self.draw_offer = None
                     if self.game['result']:
                         res = self.game['result']
@@ -207,12 +209,12 @@ def get_room(room_id):
         return rooms.get(str(room_id).upper())
 
 
-def create_room():
+def create_room(mandatory_capture=True):
     with rooms_lock:
         while True:
             rid = ''.join(secrets.choice(ROOM_ALPHABET) for _ in range(5))
             if rid not in rooms:
-                rooms[rid] = Room(rid)
+                rooms[rid] = Room(rid, mandatory_capture=mandatory_capture)
                 return rid
 
 
@@ -286,7 +288,8 @@ class Handler(BaseHTTPRequestHandler):
         data = self.read_json()
 
         if parts == ['api', 'rooms']:
-            return self.send_json({'room': create_room()})
+            mandatory = data.get('mandatoryCapture', True)
+            return self.send_json({'room': create_room(mandatory_capture=mandatory)})
 
         if len(parts) == 4 and parts[:2] == ['api', 'rooms']:
             room = get_room(parts[2])
