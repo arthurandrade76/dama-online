@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dama Online — jogue com amigos</title>
+  <meta name="description" content="Jogue dama brasileira online com seus amigos. Crie uma sala e compartilhe o link.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='44' fill='%23c0392b' stroke='%237b1e14' stroke-width='8'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <!-- ===== Tela inicial ===== -->
+  <main id="home" class="view hidden">
+    <div class="home-card">
+      <div class="logo">
+        <div class="logo-pieces"><span class="lp red"></span><span class="lp cream"></span></div>
+        <h1>Dama <em>Online</em></h1>
+      </div>
+      <p class="tagline">Jogue dama brasileira com seus amigos. Crie uma sala, mande o link e pronto!</p>
+
+      <label class="field">
+        <span>Seu nome</span>
+        <input id="home-name" maxlength="20" placeholder="Como quer ser chamado?" autocomplete="nickname">
+      </label>
+
+      <button id="btn-create" class="btn primary big">Criar sala</button>
+
+      <div class="divider"><span>ou entre com um código</span></div>
+
+      <form id="join-form" class="join-row">
+        <input id="join-code" maxlength="5" placeholder="CÓDIGO" autocomplete="off">
+        <button class="btn">Entrar</button>
+      </form>
+
+      <details class="rules">
+        <summary>Regras da dama brasileira</summary>
+        <ul>
+          <li>As brancas começam. As peças andam uma casa na diagonal, para frente.</li>
+          <li>A captura é <b>obrigatória</b> e pode ser feita para frente e para trás.</li>
+          <li><b>Lei da maioria:</b> se houver várias capturas possíveis, é obrigatório escolher a que captura mais peças.</li>
+          <li>A peça que termina o lance na última fileira vira <b>dama</b>, que anda e captura em qualquer distância na diagonal.</li>
+          <li>Vence quem capturar ou bloquear todas as peças do adversário.</li>
+          <li>Empate após 20 lances seguidos de cada lado só com damas e sem capturas.</li>
+        </ul>
+      </details>
+    </div>
+  </main>
+
+  <!-- ===== Sala ===== -->
+  <main id="room" class="view hidden">
+    <header class="topbar">
+      <a href="/" class="brand"><span class="lp red small"></span> Dama <em>Online</em></a>
+      <div class="share">
+        <span class="room-code">Sala <b id="room-code"></b></span>
+        <button id="btn-copy" class="btn small">🔗 Copiar link</button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="board-area">
+        <div class="player-bar" id="bar-top"></div>
+        <div class="board-wrap">
+          <div id="board" class="board"></div>
+          <div id="overlay" class="overlay hidden"></div>
+        </div>
+        <div class="player-bar" id="bar-bottom"></div>
+      </section>
+
+      <aside class="side">
+        <div class="panel status-panel">
+          <div id="status" class="status"></div>
+          <div id="actions" class="actions"></div>
+        </div>
+
+        <div class="panel chat-panel">
+          <h3>Chat</h3>
+          <div id="chat-log" class="chat-log"></div>
+          <form id="chat-form" class="chat-form">
+            <input id="chat-input" maxlength="300" placeholder="Escreva uma mensagem..." autocomplete="off">
+            <button class="btn small primary">Enviar</button>
+          </form>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- ===== Modal de nome ===== -->
+  <div id="name-modal" class="modal hidden">
+    <form id="name-form" class="modal-card">
+      <h2>Bem-vindo! 👋</h2>
+      <p>Você foi convidado para uma partida de dama. Qual é o seu nome?</p>
+      <input id="modal-name" maxlength="20" placeholder="Seu nome" autocomplete="nickname" required>
+      <button class="btn primary big">Entrar na sala</button>
+    </form>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
